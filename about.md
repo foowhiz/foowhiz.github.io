@@ -4,12 +4,4 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
-
-### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+I study Chemistry and Electrical and Electronics Engineering(Weird combination, I know) in Birla Institute of Technology and Science, and I'm currently participating in GSoC 2017.
