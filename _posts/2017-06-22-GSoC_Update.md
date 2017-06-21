@@ -7,8 +7,8 @@ I've had a good amount of time to go through the code of 3Dmol.js. I now underst
 My task so far was to find out what info I'd need from the [PDB](https://en.wikipedia.org/wiki/Protein_Data_Bank) file that'd be supplied as input to Avogadro 2. For this, I searched through [parsers.js](https://github.com/3dmol/3Dmol.js/blob/master/3Dmol/parsers.js#L1317), and the following is the list of records that 3Dmol.js takes in from the PDB file
 
 1. ATM and HETATM
-  a. Alternate Location
-  
+
+  a. Alternate Location<br>
   b. Serial
   c. Atom name
   d. Residue name
