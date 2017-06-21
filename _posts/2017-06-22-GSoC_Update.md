@@ -8,7 +8,7 @@ My task so far was to find out what info I'd need from the [PDB](https://en.wiki
 
 1. ATM and HETATM
 
-  a. Alternate Location<br>
+  * Alternate Location
   b. Serial
   c. Atom name
   d. Residue name
