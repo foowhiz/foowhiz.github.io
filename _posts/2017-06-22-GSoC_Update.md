@@ -8,40 +8,40 @@ My task so far was to find out what info I'd need from the [PDB](https://en.wiki
 
 1. ATM and HETATM
 
-  * Alternate Location
-  b. Serial
-  c. Atom name
-  d. Residue name
-  e. Chain ID
-  f. Residue sequence number
-  g. iCode
-  h. x, y and z coordinates
-  i. Element symbol
-  j. Temperature factor
+  *   Alternate Location
+  *   Serial
+  *   Atom name
+  *   Residue name
+  *   Chain ID
+  *   Residue sequence number
+  *   iCode
+  *   x, y and z coordinates
+  *   Element symbol
+  *   Temperature factor
   
 2. SHEET
-  a. Chain ID of initial residue in strand
-  b. Chain ID of terminal residue in strand
-  c. Sequence number of initial residue in strand
+  *   Chain ID of initial residue in strand
+  *   Chain ID of terminal residue in strand
+  *   Sequence number of initial residue in strand
   
 3. CONECT
-  a. Serial number of atom
-  b. Serial number of bonded atoms
+  *   Serial number of atom
+  *   Serial number of bonded atoms
   
 4. HELIX
-  a. Chain ID of initial chain containing helix
-  b. Chain ID of end chain containing helix
-  c. Sequence number of initial residue
-  d. Sequence number of terminal residue
+  *   Chain ID of initial chain containing helix
+  *   Chain ID of end chain containing helix
+  *   Sequence number of initial residue
+  *   Sequence number of terminal residue
   
 5. REMARK
-  a. Info from REMARK 350, if present
+  *   Info from REMARK 350, if present
   
 6. CRYST1
-  a. Unit cell parameters: Lengths a, b, c and angles alpha, beta and gamma
+  *   Unit cell parameters: Lengths a, b, c and angles alpha, beta and gamma
   
 7. ANISOU
-  a. Atom serial number
-  b. Temperature factors
+  *   Atom serial number
+  *   Temperature factors
   
 My next task is to create a mesh geometry using the above records, which can be sent for rendering.
