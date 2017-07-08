@@ -1,0 +1,191 @@
+---
+layout: post
+title: GSoC Update &#2
+---
+
+After my last update, I digged into the meat of the 3Dmol.js code to find out how exactly a PDB file can be converted to a renderable object. This can roughly be divided into two parts: (i) The flow of data from the PDB file to pre-rendering form, and (ii) The rendering of the molecule. This can be visualised in the form of the following flow diagram:
+
+This blog post will talk about the first part, i.e., the flow of data from the PDB file to pre-rendering form. The second part will be included in the next post. I will be writing the variables/code declarations etc from particular files that I think are important to understanding the flow.
+
+**IMPORTANT: In many, if not all functions, I have not written the function the arguments because I did not find them important at the time**
+
+1. We start with the file [3dmol.js](https://github.com/3dmol/3Dmol.js/blob/master/3Dmol/3dmol.js).
+    i. [`var m = viewer.addModel();`](#link)
+This creates an object of type [3Dmol.GLModel](http://3dmol.csb.pitt.edu/doc/$3Dmol.GLModel.html).
+    ii. [`m.addMolData()`](#link);
+    iii. `viewer.zoomTo();`
+    iv. `viewer.render();`
+
+
+2. [glviewer.js](https://github.com/3dmol/3Dmol.js/blob/master/3Dmol/glviewer.js)
+    i. 
+    ```javascript
+    this.addModel =  function(data, format, options) {
+            var m = new $3Dmol.GLModel(models.length, defaultcolors);
+            m.addMolData(data, format, options);
+            models.push(m);
+
+            return m;
+        };
+    ```
+    
+    ii.
+    ```javascript
+    this.render = function(callback) {
+            ⋮
+            ⋮
+            var view = this.getView();
+            
+            var i, n;
+            var exts = renderer.supportedExtensions();
+            for (i = 0; i < models.length; i++) {
+                if (models[i]) {
+                    models[i].globj(modelGroup, exts);
+                }
+            }
+
+            for (i = 0; i < shapes.length; i++) {
+                if (shapes[i]) {
+                    shapes[i].globj(modelGroup, exts);
+                }
+            }
+            
+            for (i in surfaces) { // this is an object with possible holes
+                ⋮        
+                ⋮
+                var geo = surfArr[n].geo;
+                ⋮
+                var smesh = null;
+                if(surfArr[n].mat instanceof $3Dmol.LineBasicMaterial) {
+                    //special case line meshes
+                    smesh = new $3Dmol.Line(geo, surfArr[n].mat);
+                }
+                else {
+                    smesh = new $3Dmol.Mesh(geo, surfArr[n].mat);
+                }
+                if{
+                    //Some code to transform meshes if symmetry is present, these meshes are called 'tmeshes'
+                }
+                else{
+                    surfArr[n].lastGL = smesh;
+                    modelGroup.add(smesh);
+                }
+            } // else final surface already there
+        }
+        }
+        }
+        
+        this.setView(view); // Calls show() => renderer render
+        if(typeof callback ==='function'){
+            callback();
+           // console.log("render time: " + (time2 - time1));
+        }
+        return this;
+    };  
+3. [glmodel.js](https://github.com/3dmol/3Dmol.js/blob/master/3Dmol/glmodel.js)
+    i. 
+    ```javascript
+    function GLModel(mid, defaultcolors) {
+        // private variables
+        var atoms = [];
+        var frames = [];
+        var id = mid;
+        var hidden = false;
+        var molObj = null;
+        var renderedMolObj = null;
+        var lastColors = null;
+        var modelData = {};
+        var idMatrix = new $3Dmol.Matrix4();
+        var dontDuplicateAtoms = true;
+        var defaultColor = $3Dmol.elementColors.defaultColor;
+    ```
+    
+    ii.
+    ```javascript
+    this.addMolData = function(data, format, options) {
+            options = options || {};
+            var parsedAtoms = $3Dmol.GLModel.parseMolData(data, format, options);
+            dontDuplicateAtoms = !options.duplicateAssemblyAtoms;
+            var mData = parsedAtoms.modelData;
+    ⋮
+    ⋮
+                if (frames.length == 0) { //first call
+                for (var i = 0; i < parsedAtoms.length; i++) {  
+                    if (parsedAtoms[i].length != 0)
+                        frames.push(parsedAtoms[i]);
+                }
+                if(frames[0])
+                    atoms = frames[0];
+            }
+            
+            else { //subsequent calls
+                if (options.frames) { //add to new frame
+                    for (var i = 0; i < parsedAtoms.length; i++) {
+                        frames.push(parsedAtoms[i]);
+                    }
+                }
+                else { //add atoms to current frame
+                    for (var i = 0; i < parsedAtoms.length; i++) {
+                        this.addAtoms(parsedAtoms[i]); 
+                    }
+                }
+            }
+    
+    ⋮
+    ⋮
+    }
+    ```
+    
+    iii.
+    ```javascript
+    GLModel.parseMolData = function(data, format, options) {
+        format = format || "";
+        ⋮
+        ⋮
+        //format guessing if not provided
+        ⋮
+        ⋮
+        var parse = $3Dmol.Parsers[format];
+        var parsedAtoms = parse(data, options);
+
+        return parsedAtoms;
+    };
+    ```
+    
+    iv.
+    ```javascript
+        this.addAtoms = function(newatoms) {
+            molObj = null;
+            var start = atoms.length;
+            var indexmap = [];
+            // a for loop for mapping from old index to new index
+            ⋮
+            ⋮
+            // copy and push newatoms onto atoms
+            for(i = 0; i < newatoms.length; i++) {
+                var olda = newatoms[i];
+                var nindex = indexmap[olda.index];
+                var a = $.extend(false, {}, olda);
+                a.index = nindex;
+                a.bonds = [];
+                a.bondOrder = [];
+                a.model = id;
+                a.style = a.style || defaultAtomStyle;
+                if(typeof(a.color) == "undefined")
+                    a.color = ElementColors[a.elem] || defaultColor;                
+                // copy over all bonds contained in selection,
+                // updating indices appropriately
+                var nbonds = olda.bonds ? olda.bonds.length : 0;
+                for(var j = 0; j < nbonds; j++) {
+                    var neigh = indexmap[olda.bonds[j]];
+                    if(typeof(neigh) != "undefined") {
+                        a.bonds.push(neigh);
+                        a.bondOrder.push(olda.bondOrder ? olda.bondOrder[j] : 1);
+                    }                
+                }
+                atoms.push(a);
+            }
+        };
+    ```
+    
+4. [parsers.js](https://github.com/3dmol/3Dmol.js/blob/master/3Dmol/parsers.js)
