@@ -1,6 +1,6 @@
 ---
 layout: post
-title: GSoC Update #1
+title: GSoC Update 1
 ---
 
 I've had a good amount of time to go through the code of 3Dmol.js. I now understand the flow of code across different files and functions in it.
