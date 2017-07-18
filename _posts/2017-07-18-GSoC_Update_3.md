@@ -1,6 +1,6 @@
 ---
 layout: post
-title: GSoC Update #3
+title: GSoC Update 3
 ---
 This blog is numbered 3rd, and not second because the second one is not complete yet, it is a long one. Its work is in progress in a separate branch.
 
