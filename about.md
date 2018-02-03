@@ -4,4 +4,4 @@ title: About
 permalink: /about/
 ---
 
-I study Chemistry and Electrical and Electronics Engineering(Weird combination, I know) in Birla Institute of Technology and Science, and I'm currently participating in GSoC 2017.
+I study Chemistry and Electrical and Electronics Engineering(Weird combination, I know) at Birla Institute of Technology and Science, and I am a member of the On-Board Computer of [Team Anant](http://team-anant.org/), the student satellite initiative of BITS Pilani.
