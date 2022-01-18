@@ -1,0 +1,5 @@
+1. Changes to this branch can only be made after review by 2 out of 3 people. Meaning, if someone proposes a change, one more of us needs to check that code.
+Apart from this, everyone will have their own copy of this drive folder to begin with. Anyone can make any changes to their own copy to experiment.
+2. Everyday, we'll store only those files in a new folder for that day, for which some changes have been done.
+3. There will be another file or excel sheet stating when each file was last changed, alongwith its date of creation. This is important to keep track of versions.
+4. Each time a change is suggested to a file, the matlab file should start with a comment paragraph stating, in brief, what changes were made to it as compared to the last time.
